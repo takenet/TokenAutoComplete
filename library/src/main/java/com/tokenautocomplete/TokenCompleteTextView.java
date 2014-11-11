@@ -77,7 +77,8 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
         }
     }
 
-    private char[] splitChar = {' ', '\r', '\n'};
+    protected char[] splitChar = {','};
+
     private Tokenizer tokenizer;
     private Object selectedObject;
     private TokenListener listener;
