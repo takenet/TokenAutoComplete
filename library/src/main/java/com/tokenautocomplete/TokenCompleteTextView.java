@@ -629,6 +629,10 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
         if (start < prefix.length()) {
             start = prefix.length();
         }
+        while (start - 2 > 0 && editable.charAt(start -2) == ' '){
+            start--;
+        }
+
         String original = TextUtils.substring(editable, start, end);
 
         if (editable != null) {
@@ -643,7 +647,6 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
             }
         }
     }
-
 
     /**
      * Append a token object to the object list
