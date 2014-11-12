@@ -10,7 +10,6 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -41,7 +40,6 @@ import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 
 import java.io.Serializable;
-import java.lang.Character;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -173,7 +171,7 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
     }
 
     @Override
-    protected void performFiltering(@NonNull CharSequence text, int start, int end,
+    protected void performFiltering(CharSequence text, int start, int end,
                                     int keyCode) {
         if (start < prefix.length()) {
             start = prefix.length();
@@ -1183,7 +1181,7 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
         }
 
         @Override
-        public void writeToParcel(@NonNull Parcel out, int flags) {
+        public void writeToParcel(Parcel out, int flags) {
             super.writeToParcel(out, flags);
             out.writeString(prefix);
             out.writeInt(allowDuplicates ? 1 : 0);
