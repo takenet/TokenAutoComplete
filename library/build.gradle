@@ -3,6 +3,12 @@ repositories {
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
+group = 'net.take'
+version = '1.0'
+def gitHubUrl = 'https://github.com/takenet/TokenAutoComplete'
 
 android {
     compileSdkVersion 20
@@ -18,7 +24,39 @@ android {
     }
 }
 
-task jar(type: Jar, dependsOn: ":library:assembleRelease") {
-    baseName "tokenautocomplete"
-    from fileTree(dir: 'build/classes/release')
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+bintray {
+    user = project.BINTRAY_USER
+    key = project.BINTRAY_PASSWORD
+
+    configurations = ['archives'] //When uploading configuration files
+    pkg {
+        repo = 'maven'
+        name = 'TokenAutoComplete'
+        desc = 'Bintray aar publishing example'
+        websiteUrl = gitHubUrl
+        issueTrackerUrl = gitHubUrl
+        vcsUrl = gitHubUrl
+        licenses = ['Apache-2.0']
+        labels = ['aar', 'android']
+        publicDownloadNumbers = true
+    }
 }

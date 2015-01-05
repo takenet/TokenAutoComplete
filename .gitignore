@@ -28,3 +28,5 @@ build
 *.iml
 *.iws
 *.ipr
+
+library/gradle.properties
