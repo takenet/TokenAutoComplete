@@ -379,6 +379,14 @@ protected ArrayList<Serializable> getSerializableObjects() {
 }
 ```
 
+Publishing 
+========================
+
+To publish the project on bintray create a gradle.properies file on the project root folder and set  
+BINTRAY_USER and BINTRAY_PASSWORD properties.  
+After that, you can upload the project using ```gradlew bintrayUpload```
+
+
 License
 =======
 
