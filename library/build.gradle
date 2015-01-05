@@ -60,39 +60,3 @@ bintray {
         publicDownloadNumbers = true
     }
 }
-
-bintray {
-    user = project.BINTRAY_USER
-    key = project.BINTRAY_PASSWORD
-
-    configurations = ['archives'] //When uploading configuration files
-    pkg {
-        repo = 'maven'
-        name = 'TokenAutoComplete'
-        desc = 'Bintray aar publishing example'
-        websiteUrl = gitHubUrl
-        issueTrackerUrl = gitHubUrl
-        vcsUrl = gitHubUrl
-        licenses = ['Apache-2.0']
-        labels = ['aar', 'android']
-        publicDownloadNumbers = true
-    }
-}
-
-install {
-    repositories.mavenInstaller {
-        pom {
-            project {
-                packaging 'aar'
-                name 'TokenAutoComplete'
-                url gitHubUrl
-                scm {
-                    connection gitHubUrl
-                    developerConnection gitHubUrl
-                    url gitHubUrl
-
-                }
-            }
-        }
-    }
-}
