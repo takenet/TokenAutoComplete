@@ -12,11 +12,23 @@ Support for Android 2.2 and up. Will probably work back to Android 2.0, but I ha
 Setup
 =====
 
-* [Download the jar file](https://github.com/splitwise/TokenAutoComplete/releases) and add it to your project
+Added the takenet repositore in the repositores sections in your ```build.gradle``` file:
+```
+repositories {
+    jcenter()
+    maven {
+        url 'http://dl.bintray.com/takenet/maven'
+    }
+}
+```
 
-If you would like to get the most recent code in a jar, clone the project and run ```./gradlew jar``` from the root folder. This will build a tokenautocomplete.jar in ```library/build/libs/```.
+Then  added the TokenAutoComplete as a compile dependency:
 
-You may also add the library as an Android Library to your project. All the library files live in ```library```.
+```
+dependencies {
+    compile 'net.take:tokenautocomplete:1.0'
+}
+```
 
 Creating your auto complete view
 --------------------------------
