@@ -5,7 +5,7 @@ repositories {
 apply plugin: 'com.android.application'
 
 dependencies {
-    compile project(":library")
+    compile project(":tokenautocomplete")
 }
 
 android {
