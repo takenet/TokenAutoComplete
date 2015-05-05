@@ -65,6 +65,7 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
     private ArrayList<Object> objects;
     private TokenDeleteStyle deletionStyle = TokenDeleteStyle._Parent;
     private TokenClickStyle tokenClickStyle = TokenClickStyle.None;
+    private TokenImageSpan selectedToken;
     private String prefix = "";
     private boolean hintVisible = false;
     private Layout lastLayout = null;
@@ -119,6 +120,7 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             setTextIsSelectable(false);
         }
+
         setLongClickable(false);
 
         //In theory, get the soft keyboard to not supply suggestions.
@@ -430,6 +432,28 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
         return false;
     }
 
+    public TokenImageSpan getTokenOnPosition(float x, float y)
+    {
+        Editable text = getText();
+
+        int offset;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            offset = TextPositionCompatibilityAPI8.getOffsetForPosition(x, y, this, lastLayout);
+        } else {
+            offset = getOffsetForPosition(x, y);
+        }
+
+        if (offset != -1) {
+            TokenImageSpan[] links = text.getSpans(offset, offset, TokenImageSpan.class);
+
+            if (links.length > 0) {
+                return links[0];
+            }
+        }
+
+        return null;
+    }
+
     @Override
     @TargetApi(14)
     public boolean onTouchEvent(@NonNull MotionEvent event) {
@@ -437,27 +461,45 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
         Editable text = getText();
         boolean handled = false;
 
+        if (text != null && action == MotionEvent.ACTION_DOWN) {
+            setOnLongClickListener(null);
+            selectedToken = getTokenOnPosition(event.getX(), event.getY());
+            if( selectedToken != null ) {
+                selectedToken.setOnTokenLongClickListener(getOnTokenLongClickListener());
+                selectedToken.setOnTokenClickListener( getOnTokenClickListener() );
+
+                OnLongClickListener longClickListener = new OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+
+                        if (selectedToken != null) {
+                            selectedToken.onLongClick();
+                            selectedToken = null;
+                        }
+
+                        return true;
+                    }
+                };
+
+                setOnLongClickListener(longClickListener);
+            }
+           handled = super.onTouchEvent(event);
+        }
+
         if (tokenClickStyle == TokenClickStyle.None) {
             handled = super.onTouchEvent(event);
         }
 
         if (isFocused() && text != null && lastLayout != null && action == MotionEvent.ACTION_UP) {
 
-            int offset;
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                offset = TextPositionCompatibilityAPI8.getOffsetForPosition(event.getX(), event.getY(), this, lastLayout);
-            } else {
-                offset = getOffsetForPosition(event.getX(), event.getY());
+            TokenImageSpan linkToken = getTokenOnPosition(event.getX(), event.getY());
+
+            if( linkToken != null ) {
+                linkToken.onClick();
+                handled = true;
             }
 
-            if (offset != -1) {
-                TokenImageSpan[] links = text.getSpans(offset, offset, TokenImageSpan.class);
 
-                if (links.length > 0) {
-                    links[0].onClick();
-                    handled = true;
-                }
-            }
         }
 
         if (!handled && tokenClickStyle != TokenClickStyle.None) {
@@ -465,6 +507,14 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
         }
         return handled;
 
+    }
+
+    abstract protected OnTokenClickListener getOnTokenClickListener();
+    abstract protected OnTokenLongClickListener getOnTokenLongClickListener();
+
+    @Override
+    public void setOnLongClickListener(OnLongClickListener l) {
+        super.setOnLongClickListener(l);
     }
 
     @Override
@@ -1118,6 +1168,8 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
 
     protected class TokenImageSpan extends ViewSpan {
         private Object token;
+        private OnTokenClickListener onTokenClickListener;
+        private OnTokenLongClickListener onTokenLongClickListener;
 
         public TokenImageSpan(View d, Object token) {
             super(d);
@@ -1159,8 +1211,42 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
                         setSelection(text.getSpanEnd(this) + 1);
                     }
             }
+
+            if( onTokenClickListener != null )
+            {
+                onTokenClickListener.onClick(this);
+            }
         }
 
+        public void onLongClick()
+        {
+            if( onTokenLongClickListener != null )
+            {
+                onTokenLongClickListener.onLongClick(this);
+            }
+        }
+
+        public void setOnTokenClickListener(OnTokenClickListener clickListener)
+        {
+            this.onTokenClickListener = clickListener;
+        }
+
+        public void setOnTokenLongClickListener(OnTokenLongClickListener longClickListener)
+        {
+            this.onTokenLongClickListener = longClickListener;
+        }
+
+
+
+    }
+    public static interface OnTokenClickListener
+    {
+        void onClick(TokenImageSpan tokenImageSpan);
+    }
+
+    public static interface OnTokenLongClickListener
+    {
+        void onLongClick(TokenImageSpan tokenImageSpan);
     }
 
     private class TokenSpanWatcher implements SpanWatcher {
