@@ -6,6 +6,7 @@ apply plugin: 'com.android.application'
 
 dependencies {
     compile project(":tokenautocomplete")
+    compile 'com.android.support:support-v4:22.0.0'
 }
 
 android {
