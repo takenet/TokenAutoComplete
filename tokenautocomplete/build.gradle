@@ -11,12 +11,12 @@ version = '1.0'
 def gitHubUrl = 'https://github.com/takenet/TokenAutoComplete'
 
 android {
-    compileSdkVersion 20
-    buildToolsVersion "20"
+    compileSdkVersion 22
+    buildToolsVersion "22.0.1"
 
     defaultConfig {
         minSdkVersion 10
-        targetSdkVersion 20
+        targetSdkVersion 22
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
