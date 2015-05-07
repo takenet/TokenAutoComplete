@@ -461,7 +461,7 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
         Editable text = getText();
         boolean handled = false;
 
-        if (text != null && action == MotionEvent.ACTION_DOWN) {
+        if (objects.size() > 0 && action == MotionEvent.ACTION_DOWN) {
             setOnLongClickListener(null);
             selectedToken = getTokenOnPosition(event.getX(), event.getY());
             if( selectedToken != null ) {
@@ -483,7 +483,6 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
 
                 setOnLongClickListener(longClickListener);
             }
-           handled = super.onTouchEvent(event);
         }
 
         if (tokenClickStyle == TokenClickStyle.None) {
@@ -505,6 +504,9 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
         if (!handled && tokenClickStyle != TokenClickStyle.None) {
             handled = super.onTouchEvent(event);
         }
+
+
+
         return handled;
 
     }
@@ -628,6 +630,8 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
                     text.setSpan(spanWatcher, 0, text.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                 }
             }
+
+
         }
     }
 
