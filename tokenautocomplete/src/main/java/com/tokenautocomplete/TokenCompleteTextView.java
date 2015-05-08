@@ -485,6 +485,13 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
             }
         }
 
+        if( action == MotionEvent.ACTION_DOWN){
+            if( !isFocused() && allowCollapse ){
+                setSingleLine(false);
+                focusOnField();
+            }
+        }
+
         if (tokenClickStyle == TokenClickStyle.None) {
             handled = super.onTouchEvent(event);
         }
@@ -497,15 +504,11 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
                 linkToken.onClick();
                 handled = true;
             }
-
-
         }
 
         if (!handled && tokenClickStyle != TokenClickStyle.None) {
             handled = super.onTouchEvent(event);
         }
-
-
 
         return handled;
 
@@ -608,30 +611,34 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
             }
 
 
-        } else {
-            setSingleLine(false);
-            Editable text = getText();
-            if (text != null) {
-                CountSpan[] counts = text.getSpans(0, text.length(), CountSpan.class);
-                for (CountSpan count : counts) {
-                    text.delete(text.getSpanStart(count), text.getSpanEnd(count));
-                    text.removeSpan(count);
-                }
+        }
+        else
+        {
+            focusOnField();
+        }
+    }
 
-                if (hintVisible) {
-                    setSelection(prefix.length());
-                } else {
-                    setSelection(text.length());
-                }
-
-                TokenSpanWatcher[] watchers = getText().getSpans(0, getText().length(), TokenSpanWatcher.class);
-                if (watchers.length == 0) {
-                    //Someone removes watchers? I'm pretty sure this isn't in this code... -mgod
-                    text.setSpan(spanWatcher, 0, text.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                }
+    private void focusOnField()
+    {
+        Editable text = getText();
+        if (text != null) {
+            CountSpan[] counts = text.getSpans(0, text.length(), CountSpan.class);
+            for (CountSpan count : counts) {
+                text.delete(text.getSpanStart(count), text.getSpanEnd(count));
+                text.removeSpan(count);
             }
 
+            if (hintVisible) {
+                setSelection(prefix.length());
+            } else {
+                setSelection(text.length());
+            }
 
+            TokenSpanWatcher[] watchers = getText().getSpans(0, getText().length(), TokenSpanWatcher.class);
+            if (watchers.length == 0) {
+                //Someone removes watchers? I'm pretty sure this isn't in this code... -mgod
+                text.setSpan(spanWatcher, 0, text.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            }
         }
     }
 
@@ -639,7 +646,12 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
     public void onFocusChanged(boolean hasFocus, int direction, Rect previous) {
         super.onFocusChanged(hasFocus, direction, previous);
 
-        handleFocus(hasFocus);
+        try {
+            handleFocus(hasFocus);
+        }
+        catch (Exception ex)
+        {}
+
     }
 
     @Override

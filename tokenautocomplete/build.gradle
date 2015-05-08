@@ -7,7 +7,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 group = 'net.take'
-version = '1.0.2'
+version = '1.0.3'
 def gitHubUrl = 'https://github.com/takenet/TokenAutoComplete'
 
 android {

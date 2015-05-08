@@ -65,7 +65,7 @@ public class TokenActivity extends Activity implements TokenCompleteTextView.Tok
         completionView.setLongClickable(true);
 
         if (savedInstanceState == null) {
-            completionView.setPrefix("To: ");
+            //completionView.setPrefix("To: ");
             completionView.addObject(people[0]);
             completionView.addObject(people[1]);
         }
