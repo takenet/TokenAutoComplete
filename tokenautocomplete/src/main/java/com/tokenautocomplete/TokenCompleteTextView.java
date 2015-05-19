@@ -475,6 +475,7 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
                         if (selectedToken != null) {
                             selectedToken.onLongClick();
                             selectedToken = null;
+                            setOnLongClickListener(null);
                         }
 
                         return true;
